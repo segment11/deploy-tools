@@ -1,6 +1,24 @@
 # deploy-tools
 A java ssh tool that can execute command and shell using com.jcraft.jsch.
 
+# How to use
+## dependency
+```groovy
+repositories {
+    maven {
+        url 'https://s01.oss.sonatype.org/content/groups/public'
+    }
+}
+
+dependencies {
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.36'
+    implementation group: 'org.codehaus.groovy', name: 'groovy', version: '2.4.21'
+    implementation group: 'com.jcraft', name: 'jsch', version: '0.1.55'
+    implementation group: 'commons-io', name: 'commons-io', version: '2.6'
+    implementation group: 'io.github.segment11', name: 'deploy-tools', version: '1.1-SNAPSHOT'
+}
+```
+
 ## Sample
 ```groovy
 package deploy
