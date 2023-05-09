@@ -1,0 +1,104 @@
+plugins {
+    id 'groovy'
+    id 'signing'
+    id 'maven-publish'
+}
+
+group 'io.github.segment11'
+version '1.1-SNAPSHOT'
+
+final String artifactId = 'deploy-tools'
+
+repositories {
+    maven {
+        url 'https://maven.aliyun.com/nexus/content/groups/public/'
+    }
+    mavenCentral()
+}
+
+sourceSets {
+    main {
+        groovy {
+            srcDirs = ['src']
+        }
+    }
+    test {
+        groovy {
+            srcDirs = ['test']
+        }
+    }
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+compileGroovy {
+    groovyOptions.configurationScript = file("config.groovy")
+}
+
+dependencies {
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.36'
+    implementation group: 'org.codehaus.groovy', name: 'groovy', version: '2.4.21'
+
+    implementation group: 'com.jcraft', name: 'jsch', version: '0.1.55'
+    implementation group: 'commons-io', name: 'commons-io', version: '2.6'
+
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
+    testImplementation group: 'org.spockframework', name: 'spock-core', version: '1.3-groovy-2.4'
+    testImplementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.20.0'
+    testImplementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.20.0'
+    testImplementation group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.20.0'
+}
+
+def ossReleaseUrl = 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2'
+def ossSnapshotUrl = 'https://s01.oss.sonatype.org/content/repositories/snapshots'
+//ossSnapshotUrl = ossReleaseUrl
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    from sourceSets.main.allSource
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+//            artifactId = name
+            groupId = group
+            version = version
+
+            pom {
+                name = 'deploy-tools'
+                description = 'A java ssh tool that can execute command and shell.'
+                url = 'https://github.com/segment11/deploy-tools'
+                licenses {
+                    license {
+                        name = 'The Apache Software License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'segment11'
+                        name = 'Yong Ding'
+                        email = 'dingyong87@163.com'
+                    }
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            name = 'ossrh'
+            url = version.toString().endsWith('SNAPSHOT') ? ossSnapshotUrl : ossReleaseUrl
+            credentials {
+                username = System.getProperty('ossrh.username')
+                password = System.getProperty('ossrh.password')
+            }
+        }
+    }
+}
+
+//signing {
+//    sign publishing.publications.mavenJava
+//}
+
