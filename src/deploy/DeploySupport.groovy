@@ -19,8 +19,10 @@ class DeploySupport {
 
     private Session connect(RemoteInfo remoteInfo) {
         def connectTimeoutMillis = 2000
-        final Properties config = [StrictHostKeyChecking   : 'no',
-                                   PreferredAuthentications: 'publickey,gssapi-with-mic,keyboard-interactive,password']
+        final Properties config = new Properties()
+        config['StrictHostKeyChecking'] = 'no'
+        config['PreferredAuthentications'] = 'publickey,gssapi-with-mic,keyboard-interactive,password'
+
         def jsch = new JSch()
         Session session = jsch.getSession(remoteInfo.user, remoteInfo.host, remoteInfo.port)
         session.timeout = connectTimeoutMillis
