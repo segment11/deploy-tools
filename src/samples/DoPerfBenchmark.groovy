@@ -198,7 +198,10 @@ ${seconds}
         def deploy = DeploySupport.instance
 
         def cmd = OneCmd.simple(serverCmdLine)
-        deploy.exec(info, cmd)
+        Thread.start {
+            deploy.exec(info, cmd)
+        }
+        Thread.sleep(1000 * 5)
     }
 
     static String generateKillServerCmd(String serverCmd) {
