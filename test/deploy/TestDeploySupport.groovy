@@ -5,15 +5,22 @@ def deploy = DeploySupport.instance
 def info = new RemoteInfo()
 info.host = '127.0.0.1'
 info.user = 'kerry'
-info.password = '****'
+info.password = '***'
 info.isUsePass = true
-info.rootPass = '****'
+info.rootPass = '***'
 info.port = 22
 
 def userHomeDir = '/home/' + info.user
 
 def localFilePath = userHomeDir + '/test.txt'
 def remoteFilePath = userHomeDir + '/test_dest.txt'
+
+def localFile = new File(localFilePath)
+if (!localFile.exists()) {
+    localFile.createNewFile()
+}
+localFile.text = 'test'
+
 deploy.send(info, localFilePath, remoteFilePath)
 
 def cmd = OneCmd.simple('pwd')
@@ -25,7 +32,7 @@ def list = [new OneCmd(cmd: 'pwd', checker: OneCmd.keyword(info.user + '@'))]
 if ('root' != info.user) {
     list << new OneCmd(cmd: 'su', maxWaitTimes: 10, checker: OneCmd.keyword('Password', '密码'))
     list << new OneCmd(cmd: info.rootPass, maxWaitTimes: 10, showCmdLog: false,
-            checker: OneCmd.keyword('root@').failKeyword('failure'))
+            checker: OneCmd.keyword('root@').failKeyword('failure', '失败'))
 }
 list << new OneCmd(cmd: 'mkdir -p /data/tmp', maxWaitTimes: 10, checker: OneCmd.any())
 list << new OneCmd(cmd: 'apt install -y docker.io', maxWaitTimes: 300,
