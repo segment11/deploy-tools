@@ -107,8 +107,8 @@ ${seconds}
         for (ratio in ratios.split(',')) {
             for (valueLength in valuesLengths.split(',')) {
                 for (ioThreads in ioThreadsStr.split(',')) {
-//                    testOneServer(ratio, valueLength as int, ioThreads as int, 'redis-server', redisServerBinDir)
-//                    testOneServer(ratio, valueLength as int, ioThreads as int, 'engula-server', engulaServerBinDir)
+                    testOneServer(ratio, valueLength as int, ioThreads as int, 'redis-server', redisServerBinDir)
+                    testOneServer(ratio, valueLength as int, ioThreads as int, 'engula-server', engulaServerBinDir)
                     testOneServer(ratio, valueLength as int, ioThreads as int, 'StartServer.sh', tongRdsServerBinDir)
                 }
             }
