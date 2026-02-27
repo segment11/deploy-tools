@@ -122,6 +122,13 @@ ${seconds}
 
         def line = "Testing: ${isTongRds ? 'TongRds' : serverCmd}, ratio: ${ratio}, valueLength: ${valueLength}, ioThreads: ${ioThreads}"
         println line
+
+        String splitLine = '--- --- --- --- --- --- --- --- --- --- --- ---\n'
+        outputFile.append('\n')
+        outputFile.append('\n')
+        3.times {
+            outputFile.append(splitLine)
+        }
         outputFile.append(line + '\n')
 
         if (isTongRds) {
