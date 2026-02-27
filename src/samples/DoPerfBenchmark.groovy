@@ -208,14 +208,27 @@ ${seconds}
             return "killall engula-server"
         } else {
             // tong rds, kill java process
-            return "killall java"
+            return "killall -9 java"
         }
     }
 
     void clearStartedServer(String killServerCmdWhenRemote) {
         if (serverProcessLocal) {
-            serverProcessLocal.destroy()
-            println 'server process local destroyed'
+            def isTongRds = 'java' in killServerCmdWhenRemote
+            if (isTongRds) {
+                // kill process force, wait too much time '-Dserver=MemoryDB'
+                def killCmdLine = 'kill -9 $(ps -ef | grep "java.*-Dserver=MemoryDB" | grep -v grep | awk \'{print $2}\')'
+                println killCmdLine
+                def pp = ['bash', '-c', killCmdLine].execute()
+                pp.consumeProcessOutput(System.out, System.err)
+                pp.waitFor()
+                println 'server process local killed'
+            } else {
+                serverProcessLocal.destroy()
+                println 'server process local destroyed'
+                serverProcessLocal = null
+            }
+
             Thread.sleep(1000 * 5)
             return
         }
