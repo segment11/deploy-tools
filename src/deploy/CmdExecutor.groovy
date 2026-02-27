@@ -18,7 +18,7 @@ class CmdExecutor {
 
     List<OneCmd> cmdList
 
-    String readFully(InputStream is) {
+    static String readFully(InputStream is) {
         def sw = new StringWriter()
         IOUtils.copy(is, sw, Charset.defaultCharset())
         sw.toString()
@@ -68,7 +68,7 @@ class CmdExecutor {
                 def errIs = channel.errStream
                 channel.connect()
 
-                String result
+                String result = null
                 Integer status
                 if (!command.contains('nohup')) {
                     // block
@@ -96,11 +96,11 @@ status ${status} result ${result}""".toString()
                 if (channel) {
                     try {
                         channel.inputStream.close()
-                    } catch (Exception e) {
+                    } catch (Exception ignored) {
                     }
                     try {
                         channel.disconnect()
-                    } catch (Exception e) {
+                    } catch (Exception ignored) {
                     }
                 }
             }

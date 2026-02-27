@@ -2,6 +2,7 @@ package deploy
 
 import com.jcraft.jsch.ChannelSftp
 import com.jcraft.jsch.JSch
+import com.jcraft.jsch.Session
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 import org.apache.commons.io.FileUtils
@@ -12,16 +13,16 @@ import org.apache.commons.io.FileUtils
 class DeploySupport {
     final String userHomeDir = System.getProperty('user.home').replaceAll("\\\\", '/')
 
-    private String keyName(String ip) {
+    private static String keyName(String ip) {
         'dms_auto_' + ip.replaceAll(/\./, '_')
     }
 
-    private com.jcraft.jsch.Session connect(RemoteInfo remoteInfo) {
+    private Session connect(RemoteInfo remoteInfo) {
         def connectTimeoutMillis = 2000
         final Properties config = [StrictHostKeyChecking   : 'no',
                                    PreferredAuthentications: 'publickey,gssapi-with-mic,keyboard-interactive,password']
         def jsch = new JSch()
-        com.jcraft.jsch.Session session = jsch.getSession(remoteInfo.user, remoteInfo.host, remoteInfo.port)
+        Session session = jsch.getSession(remoteInfo.user, remoteInfo.host, remoteInfo.port)
         session.timeout = connectTimeoutMillis
 
         if (remoteInfo.isUsePass) {
@@ -49,7 +50,7 @@ class DeploySupport {
             throw new IllegalStateException('local file can not read: ' + localFilePath)
         }
 
-        com.jcraft.jsch.Session session
+        Session session
         try {
             session = connect(remoteInfo)
 
@@ -92,7 +93,7 @@ class DeploySupport {
             }
         }
 
-        com.jcraft.jsch.Session session
+        Session session
         try {
             session = connect(remoteInfo)
 
