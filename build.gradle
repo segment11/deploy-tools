@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'io.github.segment11'
-version '1.1-SNAPSHOT'
+version '1.0.0'
 
 final String artifactId = 'deploy-tools'
 
@@ -38,14 +38,11 @@ compileGroovy {
 }
 
 dependencies {
-    implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.9'
-    testImplementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.20.0'
-    testImplementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.20.0'
-    testImplementation group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.20.0'
-
     implementation group: 'org.apache.groovy', name: 'groovy', version: '4.0.12'
     implementation group: 'org.apache.groovy', name: 'groovy-dateutil', version: '4.0.12'
 
     implementation group: 'com.jcraft', name: 'jsch', version: '0.1.55'
     implementation group: 'commons-io', name: 'commons-io', version: '2.15.1'
+
+    implementation group: 'redis.clients', name: 'jedis', version: '4.4.7'
 }
