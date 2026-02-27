@@ -1,7 +1,7 @@
 package samples
 
 class TongRdsCfgContent {
-    static String cfgContent(int ioThreads){
+    static String cfgContent(int ioThreads) {
         """
 <?xml version="1.0" encoding="UTF-8"?>
 <Server>

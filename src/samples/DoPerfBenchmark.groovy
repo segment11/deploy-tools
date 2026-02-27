@@ -142,6 +142,11 @@ ${seconds}
                 def cfgFile = new File(cfgDir, 'cfg.xml')
                 cfgFile.text = cfgContent
                 println 'update cfg.xml, set io threads to ' + ioThreads + ', file path: ' + cfgFile.absolutePath
+
+                def starterContent = TongRdsStarterContent.starterSh(ioThreads)
+                def starterFile = new File(binDir, 'starter.sh')
+                starterFile.text = starterContent
+                println 'update starter.sh, set io threads to ' + ioThreads + ', file path: ' + starterFile.absolutePath
             } else {
                 // change cfg.xml remote
                 def tmpFile = new File('/tmp/cfg.xml')
@@ -154,6 +159,19 @@ ${seconds}
                 def remotePath = binDir.replace('bin', 'etc') + '/cfg.xml'
                 deploy.send(info, tmpFile.absolutePath, remotePath)
                 println 'done send cfg.xml to remote, set io threads to ' + ioThreads + ', remote path: ' + remotePath
+
+                // change starter.sh remote
+                def tmpFile2 = new File('/tmp/starter.sh')
+                def starterContent = TongRdsStarterContent.starterSh(ioThreads)
+                tmpFile2.text = starterContent
+
+                def remotePath2 = binDir + '/starter.sh'
+                deploy.send(info, tmpFile2.absolutePath, remotePath2)
+                println 'done send starter.sh to remote, set io threads to ' + ioThreads + ', remote path: ' + remotePath2
+
+                // chmod +x
+                def cmd = OneCmd.simple('chmod +x ' + remotePath2)
+                deploy.exec(info, cmd)
             }
             startServer(serverCmdLine, ioThreads)
         } else {
