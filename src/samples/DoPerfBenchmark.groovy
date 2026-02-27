@@ -176,7 +176,7 @@ ${seconds}
         info.host = host
         info.user = user
         info.password = password
-        info.isUsePass = false
+        info.isUsePass = true
         info.port = 22
         info
     }
