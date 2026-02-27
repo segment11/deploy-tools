@@ -155,10 +155,10 @@ ${seconds}
                 deploy.send(info, tmpFile.absolutePath, remotePath)
                 println 'done send cfg.xml to remote, set io threads to ' + ioThreads + ', remote path: ' + remotePath
             }
-            startServer(serverCmdLine)
+            startServer(serverCmdLine, ioThreads)
         } else {
             def serverCmdLine = startRedisServerCmdLine(binDir, serverCmd, ioThreads)
-            startServer(serverCmdLine)
+            startServer(serverCmdLine, ioThreads)
         }
 
         def isListening = waitServerListening()
@@ -188,11 +188,17 @@ ${seconds}
         info
     }
 
-    boolean startServer(String serverCmdLine) {
-        println serverCmdLine
+    boolean startServer(String serverCmdLine, int ioThreads) {
+        def tasksetPrefix = 'taskset -c 0 '
+        if (ioThreads == 2) {
+            tasksetPrefix = 'taskset -c 0,1 '
+        } else if (ioThreads == 4) {
+            tasksetPrefix = 'taskset -c 0,1,2,3 '
+        }
+        println tasksetPrefix + serverCmdLine
         if (isServerLocal) {
             println 'start server on localhost, need not ssh'
-            serverProcessLocal = ['bash', '-c', serverCmdLine].execute()
+            serverProcessLocal = ['bash', '-c', tasksetPrefix + serverCmdLine].execute()
             serverProcessLocal.consumeProcessOutput(System.out, System.err)
             Thread.start {
                 serverProcessLocal.waitFor()
