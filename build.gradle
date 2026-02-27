@@ -46,3 +46,19 @@ dependencies {
 
     implementation group: 'redis.clients', name: 'jedis', version: '4.4.7'
 }
+
+jar {
+    manifest {
+        attributes "Main-Class": 'samples.DoPerfBenchmark'
+        attributes "Class-Path": '. lib/' + configurations.runtimeClasspath.collect { it.name }.join(' lib/')
+    }
+    exclude 'log4j2.xml'
+    zip64 true
+}
+
+task copyDependencies(type: Copy) {
+    from configurations.runtimeClasspath
+    into 'build/libs/lib'
+}
+
+jar.dependsOn copyDependencies
