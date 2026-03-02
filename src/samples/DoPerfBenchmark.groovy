@@ -83,6 +83,9 @@ ${seconds}
     @CommandLine.Option(names = ['-b', '--cpu-bind'], description = 'cpu-bind, eg: 16,18,20,22, default: 0,1,2,3')
     String cpuBind = '0,1,2,3'
 
+    @CommandLine.Option(names = ['-l', '--loop'], description = 'loop, eg: 1, default: 1')
+    int loop = 1
+
     static void main(String[] args) {
         def exitCode = new CommandLine(new DoPerfBenchmark()).execute(args)
         System.exit(exitCode)
@@ -102,17 +105,19 @@ ${seconds}
         def engulaServerBinDir = getFromProperty('engula.server.bin.dir', userHome + '/bin')
         def tongRdsServerBinDir = getFromProperty('tong.server.bin.dir', userHome + '/pmemdb/bin')
 
-        outputFile = new File(outputFilePath)
-        if (!outputFile.exists()) {
-            outputFile.createNewFile()
-        }
+        loop.times { i ->
+            outputFile = new File(outputFilePath + i)
+            if (!outputFile.exists()) {
+                outputFile.createNewFile()
+            }
 
-        for (ratio in ratios.split(',')) {
-            for (valueLength in valuesLengths.split(',')) {
-                for (ioThreads in ioThreadsStr.split(',')) {
-//                    testOneServer(ratio, valueLength as int, ioThreads as int, 'redis-server', redisServerBinDir)
-//                    testOneServer(ratio, valueLength as int, ioThreads as int, 'engula-server', engulaServerBinDir)
-                    testOneServer(ratio, valueLength as int, ioThreads as int, 'StartServer.sh', tongRdsServerBinDir)
+            for (ratio in ratios.split(',')) {
+                for (valueLength in valuesLengths.split(',')) {
+                    for (ioThreads in ioThreadsStr.split(',')) {
+                        testOneServer(ratio, valueLength as int, ioThreads as int, 'redis-server', redisServerBinDir)
+                        testOneServer(ratio, valueLength as int, ioThreads as int, 'engula-server', engulaServerBinDir)
+                        testOneServer(ratio, valueLength as int, ioThreads as int, 'StartServer.sh', tongRdsServerBinDir)
+                    }
                 }
             }
         }
