@@ -138,7 +138,7 @@ cd ${SERVER_HOME}
 
 if [ "$1" != "daemon" ]
 then
-  XXXX $JAVA ${SERVEROPT} ${ADD_OPTIONS} -classpath "$CLASS_PATH" com.server.Server $1
+ $JAVA ${SERVEROPT} -XX:ActiveProcessorCount=XXXX ${ADD_OPTIONS} -classpath "$CLASS_PATH" com.server.Server $1
 else
- nohup $JAVA ${SERVEROPT} ${ADD_OPTIONS} -classpath "$CLASS_PATH" com.server.Server > /dev/null 2>&1 & > /dev/null
+ nohup $JAVA ${SERVEROPT} -XX:ActiveProcessorCount=XXXX ${ADD_OPTIONS} -classpath "$CLASS_PATH" com.server.Server > /dev/null 2>&1 & > /dev/null
 fi
