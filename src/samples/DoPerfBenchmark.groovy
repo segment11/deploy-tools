@@ -143,10 +143,10 @@ ${seconds}
                 cfgFile.text = cfgContent
                 println 'update cfg.xml, set io threads to ' + ioThreads + ', file path: ' + cfgFile.absolutePath
 
-                def starterContent = TongRdsStarterContent.starterSh(ioThreads)
-                def starterFile = new File(binDir, 'starter.sh')
-                starterFile.text = starterContent
-                println 'update starter.sh, set io threads to ' + ioThreads + ', file path: ' + starterFile.absolutePath
+//                def starterContent = TongRdsStarterContent.starterSh(ioThreads)
+//                def starterFile = new File(binDir, 'starter.sh')
+//                starterFile.text = starterContent
+//                println 'update starter.sh, set io threads to ' + ioThreads + ', file path: ' + starterFile.absolutePath
             } else {
                 // change cfg.xml remote
                 def tmpFile = new File('/tmp/cfg.xml')
@@ -207,11 +207,11 @@ ${seconds}
     }
 
     boolean startServer(String serverCmdLine, int ioThreads) {
-        def tasksetPrefix = 'taskset -c 0 '
+        def tasksetPrefix = 'taskset -c 16 '
         if (ioThreads == 2) {
-            tasksetPrefix = 'taskset -c 0,1 '
+            tasksetPrefix = 'taskset -c 16,18 '
         } else if (ioThreads == 4) {
-            tasksetPrefix = 'taskset -c 0,1,2,3 '
+            tasksetPrefix = 'taskset -c 16,18,20,22 '
         }
         println tasksetPrefix + serverCmdLine
         if (isServerLocal) {
