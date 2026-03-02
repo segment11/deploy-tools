@@ -161,17 +161,17 @@ ${seconds}
                 println 'done send cfg.xml to remote, set io threads to ' + ioThreads + ', remote path: ' + remotePath
 
                 // change starter.sh remote
-                def tmpFile2 = new File('/tmp/starter.sh')
-                def starterContent = TongRdsStarterContent.starterSh(ioThreads)
-                tmpFile2.text = starterContent
-
-                def remotePath2 = binDir + '/starter.sh'
-                deploy.send(info, tmpFile2.absolutePath, remotePath2)
-                println 'done send starter.sh to remote, set io threads to ' + ioThreads + ', remote path: ' + remotePath2
-
-                // chmod +x
-                def cmd = OneCmd.simple('chmod +x ' + remotePath2)
-                deploy.exec(info, cmd)
+//                def tmpFile2 = new File('/tmp/starter.sh')
+//                def starterContent = TongRdsStarterContent.starterSh(ioThreads)
+//                tmpFile2.text = starterContent
+//
+//                def remotePath2 = binDir + '/starter.sh'
+//                deploy.send(info, tmpFile2.absolutePath, remotePath2)
+//                println 'done send starter.sh to remote, set io threads to ' + ioThreads + ', remote path: ' + remotePath2
+//
+//                // chmod +x
+//                def cmd = OneCmd.simple('chmod +x ' + remotePath2)
+//                deploy.exec(info, cmd)
             }
             startServer(serverCmdLine, ioThreads)
         } else {
