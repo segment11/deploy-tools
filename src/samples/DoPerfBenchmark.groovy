@@ -80,6 +80,9 @@ ${seconds}
     @CommandLine.Option(names = ['-o', '--output-file-path'], description = 'output-file-path, eg: output.txt, default: output.txt')
     String outputFilePath = 'output.txt'
 
+    @CommandLine.Option(names = ['-b', '--cpu-bind'], description = 'cpu-bind, eg: 16,18,20,22, default: 0,1,2,3')
+    String cpuBind = '0,1,2,3'
+
     static void main(String[] args) {
         def exitCode = new CommandLine(new DoPerfBenchmark()).execute(args)
         System.exit(exitCode)
@@ -107,8 +110,8 @@ ${seconds}
         for (ratio in ratios.split(',')) {
             for (valueLength in valuesLengths.split(',')) {
                 for (ioThreads in ioThreadsStr.split(',')) {
-                    testOneServer(ratio, valueLength as int, ioThreads as int, 'redis-server', redisServerBinDir)
-                    testOneServer(ratio, valueLength as int, ioThreads as int, 'engula-server', engulaServerBinDir)
+//                    testOneServer(ratio, valueLength as int, ioThreads as int, 'redis-server', redisServerBinDir)
+//                    testOneServer(ratio, valueLength as int, ioThreads as int, 'engula-server', engulaServerBinDir)
                     testOneServer(ratio, valueLength as int, ioThreads as int, 'StartServer.sh', tongRdsServerBinDir)
                 }
             }
@@ -207,12 +210,15 @@ ${seconds}
     }
 
     boolean startServer(String serverCmdLine, int ioThreads) {
-        def tasksetPrefix = 'taskset -c 16 '
+        def cpuBindArray = cpuBind.split(',')
+        def tasksetPrefix = 'taskset -c ' + cpuBindArray[0] + ' '
         if (ioThreads == 2) {
-            tasksetPrefix = 'taskset -c 16,18 '
+            tasksetPrefix = 'taskset -c ' + cpuBindArray[0] + ' ' + cpuBindArray[1] + ' '
         } else if (ioThreads == 4) {
-            tasksetPrefix = 'taskset -c 16,18,20,22 '
+            tasksetPrefix = 'taskset -c ' + cpuBindArray[0] + ' ' + cpuBindArray[1] + ' ' + cpuBindArray[2] + ' ' + cpuBindArray[3] + ' '
         }
+        println 'cpu bind: ' + tasksetPrefix
+
         println tasksetPrefix + serverCmdLine
         if (isServerLocal) {
             println 'start server on localhost, need not ssh'
