@@ -52,8 +52,13 @@ jar {
         attributes "Main-Class": 'samples.DoPerfBenchmark'
         attributes "Class-Path": '. lib/' + configurations.runtimeClasspath.collect { it.name }.join(' lib/')
     }
-    exclude 'log4j2.xml'
+    exclude 'starter.sh'
     zip64 true
+}
+
+task copyConfigFile(type: Copy) {
+    from 'resources/starter.sh'
+    into "$buildDir/libs/"
 }
 
 task copyDependencies(type: Copy) {
@@ -61,4 +66,4 @@ task copyDependencies(type: Copy) {
     into 'build/libs/lib'
 }
 
-jar.dependsOn copyDependencies
+jar.dependsOn copyConfigFile, copyDependencies
